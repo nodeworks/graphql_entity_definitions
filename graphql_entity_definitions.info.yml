@@ -5,5 +5,5 @@ type: module
 package: 'GraphQL'
 
 dependencies:
-  - graphql
-  - graphql_core
+  - graphql:graphql
+  - graphql:graphql_core
