@@ -1,5 +1,5 @@
-query EntityDefinition($name: String!) {
-  definition: entityDefinition(name: $name) {
+query EntityDefinition($name: String!, $bundle: String, $field_types: FieldTypes) {
+  definition: entityDefinition(name: $name, bundle: $bundle, field_types: $field_types) {
     label
     fields {
       id

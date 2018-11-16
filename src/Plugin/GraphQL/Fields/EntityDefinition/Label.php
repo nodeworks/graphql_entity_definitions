@@ -21,7 +21,12 @@ class Label extends FieldPluginBase {
    * {@inheritdoc}
    */
   public function resolveValues($value, array $args, ResolveContext $context, ResolveInfo $info) {
-    yield $value->getLabel();
+    if ($bundle = $context->getContext('bundle', $info)) {
+      yield $bundle['label'];
+    }
+    else {
+      yield $value->getLabel();
+    }
   }
 
 }

@@ -4,6 +4,9 @@ namespace Drupal\graphql_entity_definitions\Plugin\GraphQL\Fields\EntityDefiniti
 
 use Drupal\Core\Entity\ContentEntityType;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Field\Entity\BaseFieldOverride;
+use Drupal\field\Entity\FieldConfig;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\Plugin\GraphQL\Fields\FieldPluginBase;
@@ -68,9 +71,17 @@ class Fields extends FieldPluginBase implements ContainerFactoryPluginInterface 
   public function resolveValues($value, array $args, ResolveContext $context, ResolveInfo $info) {
     /** @var \Drupal\Core\Entity\ContentEntityType $value */
     if ($value instanceof ContentEntityType) {
-      $id = $value->id();
-      $entity_id = $id . '.' . $id . '.default';
-      $fields = \Drupal::entityManager()->getFieldDefinitions($id, $id);
+      if ($bundle = $context->getContext('bundle', $info)) {
+        $key = $bundle['key'];
+        $id = $value->id();
+        $entity_id = $id . '.' . $id . '.' . $key;
+        $fields = \Drupal::entityManager()->getFieldDefinitions($id, $key);
+      }
+      else {
+        $id = $value->id();
+        $entity_id = $id . '.' . $id . '.default';
+        $fields = \Drupal::entityManager()->getFieldDefinitions($id, $id);
+      }
 
       /** @var \Drupal\Core\Config\Entity\ConfigEntityStorage $form_display */
       $form_display = $this->entityTypeManager
@@ -78,8 +89,25 @@ class Fields extends FieldPluginBase implements ContainerFactoryPluginInterface 
         ->load($entity_id);
 
       $context->setContext('entity_form_display', $form_display, $info);
-      foreach ($fields as $field) {
-        yield $field;
+      if ($field_types = $context->getContext('field_types', $info)) {
+        foreach ($fields as $field) {
+          if ($field_types === 'BASE_FIELDS') {
+            if ($field instanceof BaseFieldDefinition) {
+              yield $field;
+            }
+          }
+          elseif ($field_types === 'FIELD_CONFIG') {
+            if ($field instanceof FieldConfig || $field instanceof BaseFieldOverride) {
+              yield $field;
+            }
+          }
+          else {
+            yield $field;
+          }
+        }
+      }
+      else {
+        yield from $fields;
       }
     }
   }

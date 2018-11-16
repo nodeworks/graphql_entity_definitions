@@ -2,8 +2,6 @@
 
 namespace Drupal\graphql_entity_definitions\Plugin\GraphQL\Fields\EntityDefinition\Fields;
 
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\field\Entity\FieldConfig;
 use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\Plugin\GraphQL\Fields\FieldPluginBase;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -26,14 +24,18 @@ class DefaultValue extends FieldPluginBase {
     /** @var \Drupal\field\Entity\FieldConfig $value */
     $default_value = $value->getDefaultValueLiteral();
     if (is_array($default_value)) {
-      if ($value->getType() === 'text_long') {
-        yield $default_value[0]['value'];
+      switch ($value->getType()) {
+        case 'text_long':
+          yield $default_value[0]['value'];
+          break;
+
+        case 'boolean':
+          yield (bool) $default_value[0]['value'];
+          break;
       }
     }
     else {
       yield $default_value;
     }
-
-    yield NULL;
   }
 }

@@ -19,7 +19,12 @@ use Drupal\graphql\GraphQL\Execution\ResolveContext;
  *   name = "entityDefinition",
  *   type = "EntityDefinition",
  *   arguments = {
- *     "name" = "String!"
+ *     "name" = "String!",
+ *     "bundle" = "String",
+ *     "field_types" = {
+ *       "type" = "FieldTypes",
+ *       "default" = "ALL"
+ *     }
  *   }
  * )
  */
@@ -37,6 +42,19 @@ class EntityDefinition extends FieldPluginBase implements ContainerFactoryPlugin
    * {@inheritdoc}
    */
   public function resolveValues($value, array $args, ResolveContext $context, ResolveInfo $info) {
+    if ($args['bundle']) {
+      $bundle_info = \Drupal::service('entity_type.bundle.info')->getBundleInfo($args['name']);
+      if (isset($bundle_info[$args['bundle']])) {
+        $bundle = $bundle_info[$args['bundle']];
+        $bundle['key'] = $args['bundle'];
+        $context->setContext('bundle', $bundle, $info);
+      }
+    }
+
+    if ($args['field_types']) {
+      $context->setContext('field_types', $args['field_types'], $info);
+    }
+
     yield $this->entityTypeManager->getDefinition($args['name']);
   }
 

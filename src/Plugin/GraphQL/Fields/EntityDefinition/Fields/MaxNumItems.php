@@ -3,6 +3,7 @@
 namespace Drupal\graphql_entity_definitions\Plugin\GraphQL\Fields\EntityDefinition\Fields;
 
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Field\Entity\BaseFieldOverride;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\graphql\GraphQL\Execution\ResolveContext;
 use Drupal\graphql\Plugin\GraphQL\Fields\FieldPluginBase;
@@ -31,8 +32,9 @@ class MaxNumItems extends FieldPluginBase {
       /** @var \Drupal\field\Entity\FieldConfig $value */
       yield $value->getFieldStorageDefinition()->getCardinality();
     }
-    else {
-      yield NULL;
+    elseif ($value instanceof BaseFieldOverride) {
+      /** @var \Drupal\Core\Field\Entity\BaseFieldOverride $value */
+      yield $value->getFieldStorageDefinition()->getCardinality();
     }
   }
 
