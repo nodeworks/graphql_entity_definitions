@@ -26,11 +26,11 @@ class DefaultValue extends FieldPluginBase {
     if (is_array($default_value)) {
       switch ($value->getType()) {
         case 'text_long':
-          yield $default_value[0]['value'];
+          yield $default_value ? $default_value[0]['value'] : NULL;
           break;
 
         case 'boolean':
-          yield (bool) $default_value[0]['value'];
+          yield (bool) $default_value ? $default_value[0]['value'] : FALSE;
           break;
       }
     }
@@ -38,4 +38,5 @@ class DefaultValue extends FieldPluginBase {
       yield $default_value;
     }
   }
+
 }
