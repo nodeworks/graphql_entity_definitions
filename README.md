@@ -7,7 +7,9 @@ This can be useful for building forms/views for entities through a front-end aut
 An example query would be the follow, where
 
 ```$name``` is equal to the entity id e.g., user, taxonomy_term, node, etc.
+
 ```$bundle``` is the entity bundle (not required).
+
 ```$field_types``` is an enum of either: ALL, BASE_FIELDS, or FIELD_CONFIG.
 
 The ```$field_types``` parameter allows you to filter the fields on the type of field, such as base fields, and field config.
