@@ -14,7 +14,7 @@ An example query would be the follow, where
 
 The ```$field_types``` parameter allows you to filter the fields on the type of field, such as base fields, and field config.
 
-```
+```graphql
 query EntityDefinition($name: String!, $bundle: String, $field_types: FieldTypes) {
   definition: entityDefinition(name: $name, bundle: $bundle, field_types: $field_types) {
     label
