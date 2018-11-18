@@ -1,6 +1,6 @@
-GraphQL Entity Defintions
+## GraphQL Entity Defintions ##
 
-This module exposes Drupal content entity definitions through GraphQL via the Drupal GraphQL contrib module.
+This module exposes Drupal content entity definitions through GraphQL via the [Drupal GraphQL](https://www.drupal.org/project/graphql) contrib module.
 
 This can be useful for building forms/views for entities through a front-end automatically instead of hand coding and constantly maintaining updates and changes.
 
